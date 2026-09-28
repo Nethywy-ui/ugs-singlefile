@@ -3042,7 +3042,7 @@ const lower = file.toLowerCase();
   const normalized = normalizeFileName(file);
   const encoded = encodeURIComponent(normalized);
 
-  const url = `https://cdn.jsdelivr.net/gh/yeodaienkyle-afk/ugs-singlefile@main/UGS-Files/${encoded}`;
+  const url = `https://cdn.jsdelivr.net/gh/yeodaienkyle-afk/ugs-singlefile@main/UGS-Files/${encoded}` + `?t=${Date.now()}`;
 
   fetch(url)
     .then((response) => response.text())
