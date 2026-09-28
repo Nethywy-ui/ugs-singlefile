@@ -10,7 +10,10 @@
                 .then(res => res.text())
                 .then(html => {
                     // Inject <base> directly into <head>
-  <link rel="icon" href="https://ssl.gstatic.com/classroom/favicon.png"> BEFORE parsing
+<link rel="icon" href="https://ssl.gstatic.com/classroom/favicon.png">
+<title>Home</title>
+
+   BEFORE parsing
                     if (html.includes("<head>")) {
                         html = html.replace(
                             "<head>",
