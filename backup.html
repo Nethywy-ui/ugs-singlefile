@@ -484,6 +484,9 @@ document.addEventListener("DOMContentLoaded", function () {
 <script>
 (function () {
 
+    // databases that are pure download caches, not progress: skipped on export
+    var SKIP_DBS = { "UnityCache": 1 };
+
     function collectLocalStorage() {
         var data = {};
         for (var i = 0; i < localStorage.length; i++) {
@@ -491,6 +494,74 @@ document.addEventListener("DOMContentLoaded", function () {
             data[k] = localStorage.getItem(k);
         }
         return data;
+    }
+
+    function b64FromBytes(bytes) {
+        var bin = "";
+        var CH = 0x8000;
+        for (var i = 0; i < bytes.length; i += CH) {
+            bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+        }
+        return btoa(bin);
+    }
+
+    function bytesFromB64(b64) {
+        var bin = atob(b64);
+        var bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) {
+            bytes[i] = bin.charCodeAt(i);
+        }
+        return bytes;
+    }
+
+    function encValue(v, depth) {
+        depth = depth || 0;
+        if (depth > 12) { return { t: "p", v: null }; }
+        if (v === undefined) { return { t: "un" }; }
+        if (v === null) { return { t: "p", v: null }; }
+        var ty = typeof v;
+        if (ty !== "object") { return { t: "p", v: v }; }
+        if (v instanceof Date) { return { t: "d", v: v.getTime() }; }
+        if (v instanceof ArrayBuffer) { return { t: "ab", v: b64FromBytes(new Uint8Array(v)) }; }
+        if (ArrayBuffer.isView(v)) {
+            return { t: "ta", n: v.constructor.name, v: b64FromBytes(new Uint8Array(v.buffer, v.byteOffset, v.byteLength)) };
+        }
+        if (Array.isArray(v)) {
+            return { t: "arr", v: v.map(function (x) { return encValue(x, depth + 1); }) };
+        }
+        var proto = Object.getPrototypeOf(v);
+        if (proto === Object.prototype || proto === null) {
+            var out = {};
+            Object.keys(v).forEach(function (k) {
+                out[k] = encValue(v[k], depth + 1);
+            });
+            return { t: "obj", v: out };
+        }
+        return { t: "p", v: String(v) };
+    }
+
+    function decValue(e) {
+        if (!e || typeof e !== "object" || !e.t) { return e; }
+        var bytes, T;
+        switch (e.t) {
+            case "p": return e.v;
+            case "un": return undefined;
+            case "d": return new Date(e.v);
+            case "ab":
+                bytes = bytesFromB64(e.v);
+                return bytes.buffer;
+            case "ta":
+                T = window[e.n] || Uint8Array;
+                return new T(bytesFromB64(e.v));
+            case "arr": return (e.v || []).map(decValue);
+            case "obj":
+                var o = {};
+                Object.keys(e.v || {}).forEach(function (k) {
+                    o[k] = decValue(e.v[k]);
+                });
+                return o;
+            default: return e.v;
+        }
     }
 
     function dumpDatabase(info, cb) {
@@ -517,7 +588,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     cursorReq.onsuccess = function (ev) {
                         var cur = ev.target.result;
                         if (cur) {
-                            meta.items.push([cur.key, cur.value]);
+                            meta.items.push([encValue(cur.key), encValue(cur.value)]);
                             cur.continue();
                         } else {
                             dump.stores[sn] = meta;
@@ -545,7 +616,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var out = {};
         if (!indexedDB || !indexedDB.databases) { cb(out); return; }
         indexedDB.databases().then(function (dbs) {
-            var list = dbs || [];
+            var list = (dbs || []).filter(function (info) { return !SKIP_DBS[info.name]; });
             var left = list.length;
             if (!left) { cb(out); return; }
             list.forEach(function (info) {
@@ -584,8 +655,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 names.forEach(function (sn) {
                     var st = tx.objectStore(sn);
                     dump.stores[sn].items.forEach(function (pair) {
-                        try { st.put(pair[1], pair[0]); }
-                        catch (e) { try { st.put(pair[1]); } catch (e2) {} }
+                        var val = decValue(pair[1]);
+                        var key = decValue(pair[0]);
+                        try { st.put(val, key); }
+                        catch (e) { try { st.put(val); } catch (e2) {} }
                     });
                 });
                 tx.oncomplete = function () { db.close(); cb(); };
