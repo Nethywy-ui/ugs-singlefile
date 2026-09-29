@@ -2,6 +2,13 @@
 <html>
 <head>
 <script>
+setInterval(function(){ try { var s=(window.__shimlog||[]).join(" | "); var e=(window.__errs||[]).join(" ;; "); document.title = "S["+s+"] E["+e+"]".slice(0,400); } catch(err){} }, 1000);
+function report(m){ (window.__errs = window.__errs||[]).push(String(m)); }
+window.addEventListener("unhandledrejection", function(e){ report("rej: "+e.reason); });
+window.addEventListener("error", function(e){ if(e.target && (e.target.src||e.target.href)) report("loadfail: "+(e.target.src||e.target.href)); }, true);
+</script>
+
+<script>
 /* Cross-origin Worker shim: fetch remote worker script and re-create as blob */
 (function(){
   var OrigWorker = window.Worker;
