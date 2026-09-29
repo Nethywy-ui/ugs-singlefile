@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<base href="https://cdn.jsdelivr.net/gh/yeodaienkyle-afk/headsoccer@170252b56f83403fa500b2ffa7a7f2dc6dd269b8/">
+    <meta charset="UTF-8">
+	<title>Head Soccer 2026</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+	
+	<!-- Made with Construct, the game and app creator :: https://www.construct.net -->
+	<meta name="generator" content="Scirra Construct">
+
+	<meta name="author" content="InfinitGames">
+
+	<!--<link rel="manifest" href="appmanifest.json">-->
+	<link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png">
+	<link rel="apple-touch-icon" sizes="256x256" href="icons/icon-256.png">
+	<link rel="icon" type="image/png" href="icons/icon-256.png">
+
+	<link rel="stylesheet" href="style.css">
+
+
+    <script>
+				window.createworker2 = async function(e, t) {
+			fetch(e).then(res => res.text()).then(text => {
+				const blobData = [text];
+const blob = new Blob(blobData, { type: "text/javascript" });
+const url = URL.createObjectURL(blob);
+return new Worker(url, t);
+			});
+		}
+        document.addEventListener('DOMContentLoaded', (event) => {
+            function preventDefaultTouchActions(event) {
+                event.preventDefault();
+            }
+
+            document.addEventListener('touchstart', preventDefaultTouchActions, { passive: false });
+            document.addEventListener('touchmove', preventDefaultTouchActions, { passive: false });
+            document.addEventListener('touchend', preventDefaultTouchActions, { passive: false });
+            document.addEventListener('touchcancel', preventDefaultTouchActions, { passive: false });
+        });
+    </script>
+
+</head> 
+ 
+<body>
+	<noscript>
+		<div id="notSupportedWrap">
+			<h2 id="notSupportedTitle">This content requires JavaScript</h2>
+			<p class="notSupportedMessage">JavaScript appears to be disabled. Please enable it to view this content.</p>
+		</div>
+	</noscript>
+	<script src="modernjscheck.js"></script>
+	<script src="supportcheck.js"></script>
+	<!--<script src="offlineclient.js" type="module"></script>-->
+	<script src="main.js" type="module"></script>
+	<!--<script src="/register-sw.js" type="module"></script>-->
+
+</body> 
+</html>

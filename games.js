@@ -145,6 +145,7 @@ let files = [
   "clasteroids",
   "clasteroidsALT",
   "clasteroidsarcade",
+  "clastray",
   "clAstrosDreamland",
   "clastynax",
   "clatariadventure",
@@ -455,6 +456,7 @@ let files = [
   "clclover",
   "clclubbytheseal",
   "clclucluland",
+  "clclumsybird",
   "clclusterrush",
   "clcoalllcdemo",
   "clcod4",
@@ -1146,6 +1148,7 @@ let files = [
   "clharvestmoon64",
   "clhauntedschool",
   "clhauntthehouse",
+  "clheadsoccer",
   "clheartandsoul",
   "clheartandsoul1.2.1.html",
   "clheartandsoul121",
@@ -2745,12 +2748,14 @@ let files = [
   "cltownscraper",
   "cltrace",
   "cltrafficjam3d",
+  "cltrafficracer",
   "cltralalerotralalaescapetungtungtungsahur",
   "cltrappedwithjester",
   "cltrapthecat",
   "cltrechoroustrials",
   "cltrechoroustrialspart2",
   "cltreeshateyou",
+  "cltrexrunner",
   "cltriachnid",
   "cltripleplay2000",
   "cltriviacrack",
@@ -2952,7 +2957,6 @@ let files = [
   "skypack",
   "supremeduelistfix",
   "thiefpuzzle",
-  "unpkg"
 ];
 function generateAllSections() {
   try {
