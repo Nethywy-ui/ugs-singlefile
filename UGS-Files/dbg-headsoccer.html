@@ -15,7 +15,7 @@ window.addEventListener("error", function(e){ if(e.target && (e.target.src||e.ta
   function ShimWorker(url, opts){
     try {
       (window.__shimlog = window.__shimlog || []).push("call:" + url);
-      if (typeof url === "string" && /^https?:/i.test(url)) {
+      if (typeof url === "string") {
         var a = document.createElement("a"); a.href = url;
         if (a.origin !== location.origin) {
           var xhr = new XMLHttpRequest();
