@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+/* Cross-origin Worker shim: fetch remote worker script and re-create as blob */
+(function(){
+  var OrigWorker = window.Worker;
+  function ShimWorker(url, opts){
+    try {
+      (window.__shimlog = window.__shimlog || []).push("call:" + url);
+      if (typeof url === "string") {
+        var a = document.createElement("a"); a.href = url;
+        if (a.origin !== location.origin) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", url, false);
+          xhr.send();
+          window.__shimlog.push("xhr:" + xhr.status);
+          if (xhr.status >= 200 && xhr.status < 300) {
+            var blob = new Blob([xhr.responseText], { type: "text/javascript" });
+            return new OrigWorker(URL.createObjectURL(blob), opts);
+          }
+        }
+      }
+    } catch (e) { /* fall through to original */ }
+    return new OrigWorker(url, opts);
+  }
+  ShimWorker.prototype = OrigWorker.prototype;
+  window.Worker = ShimWorker;
+})();
+</script>
+
+	<base href="https://cdn.jsdelivr.net/gh/yeodaienkyle-afk/headsoccer@2590a4e3d981863c6d1b259fc60a241baf8834f9/">
+    <meta charset="UTF-8">
+	<title>Head Soccer 2026</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+	
+	<!-- Made with Construct, the game and app creator :: https://www.construct.net -->
+	<meta name="generator" content="Scirra Construct">
+
+	<meta name="author" content="InfinitGames">
+
+	<!--<link rel="manifest" href="appmanifest.json">-->
+	<link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png">
+	<link rel="apple-touch-icon" sizes="256x256" href="icons/icon-256.png">
+	<link rel="icon" type="image/png" href="icons/icon-256.png">
+
+	<link rel="stylesheet" href="style.css">
+
+
+    <script>
+				window.createworker2 = async function(e, t) {
+			return fetch(e).then(res => res.text()).then(text => {
+				const blobData = [text];
+const blob = new Blob(blobData, { type: "text/javascript" });
+const url = URL.createObjectURL(blob);
+return new Worker(url, t);
+			});
+		}
+        document.addEventListener('DOMContentLoaded', (event) => {
+            function preventDefaultTouchActions(event) {
+                event.preventDefault();
+            }
+
+            document.addEventListener('touchstart', preventDefaultTouchActions, { passive: false });
+            document.addEventListener('touchmove', preventDefaultTouchActions, { passive: false });
+            document.addEventListener('touchend', preventDefaultTouchActions, { passive: false });
+            document.addEventListener('touchcancel', preventDefaultTouchActions, { passive: false });
+        });
+    </script>
+
+</head> 
+ 
+<body>
+	<noscript>
+		<div id="notSupportedWrap">
+			<h2 id="notSupportedTitle">This content requires JavaScript</h2>
+			<p class="notSupportedMessage">JavaScript appears to be disabled. Please enable it to view this content.</p>
+		</div>
+	</noscript>
+	<script src="modernjscheck.js"></script>
+	<script src="supportcheck.js"></script>
+	<!--<script src="offlineclient.js" type="module"></script>-->
+	<script src="main.js" type="module"></script>
+	<!--<script src="/register-sw.js" type="module"></script>-->
+
+</body> 
+</html>

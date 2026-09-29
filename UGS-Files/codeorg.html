@@ -1,12 +1,16 @@
 <template id="site-html">
   <html>
+<head>
+<link rel="icon" href="https://ssl.gstatic.com/classroom/favicon.png">
+<title>Home</title>
+</head>
     <body>
       <script>
         launch();
 
         function launch() {
           try {
-            fetch("https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile@main/codeorn.html?t="+Date.now())
+            fetch("https://cdn.jsdelivr.net/gh/yeodaienkyle-afk/ugs-singlefile@main/codeorn.html?t="+Date.now())
               .then(response => response.text())
               .then(html => {
               document.documentElement.innerHTML = html;

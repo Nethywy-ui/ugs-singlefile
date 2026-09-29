@@ -4,6 +4,10 @@
   <!-- This is NOT to be confused with the regular game or a ROM hack. This is a Nintendo made modification of the game. If you are implementing this on your website, make sure you have the regular version as well. -->
 
   <head>
+<link rel="icon" href="https://ssl.gstatic.com/classroom/favicon.png">
+<title>Home</title>
+
+  
     <script>
       window.gameconfig = {
         name: "Legend of Zelda, The - Ocarina of Time (USA)",
@@ -106,14 +110,14 @@
           EJS_gameName = window.gameconfig.name;
           EJS_color = "#0064ff";
           EJS_startOnLoaded = true;
-          EJS_pathtodata = "https://cdn.jsdelivr.net/gh/bubblfan/emu@master/";
+          EJS_pathtodata = "https://cdn.jsdelivr.net/gh/yeodaienkyle-afk/emu@master/";
           EJS_gameUrl = gameUrl;
           EJS_defaultOptions = {
             vsync: "disabled",
           };
           const script = document.createElement("script");
           script.src =
-            "https://cdn.jsdelivr.net/gh/bubblfan/emu@master/loader.js";
+            "https://cdn.jsdelivr.net/gh/yeodaienkyle-afk/emu@master/loader.js";
           document.body.appendChild(script);
         })
         .catch((error) => {

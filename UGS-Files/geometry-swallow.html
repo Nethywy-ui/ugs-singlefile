@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="https://ssl.gstatic.com/classroom/favicon.png">
+<title>Home</title>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+        body {
+            margin: 0;
+            background: #111;
+            font-family: system-ui, sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+        #points-label {
+            color: #fff;
+            font-size: 1.125rem;
+            margin-left: 0.75rem;
+            margin-top: 0.75rem;
+        }
+        #endgame-screen {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+        #endgame-screen .col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #endgame-screen .big {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+        #endgame-screen .mid {
+            font-size: 1.125rem;
+            margin-top: 0.5rem;
+        }
+        #play-again {
+            margin-top: 0.75rem;
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        #play-again:hover { background: #059669; }
+        footer {
+            color: #fff;
+            margin-left: 0.75rem;
+            margin-top: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <p id="points-label">Points: <span id="points">0</span></p>
+    <canvas id="main-canvas"></canvas>
+
+    <div id="endgame-screen">
+        <div class="col">
+            <p class="big">You Lost. Lol lmao fr?</p>
+            <p class="mid">Total Points: <span id="total-points">0</span></p>
+            <button id="play-again">Play again</button>
+        </div>
+    </div>
+
+    <footer>&copy; Jabez Torre 2022 &mdash; MIT License, source: github.com/jabezborja/geometry-swallow</footer>
+
+    <script>
+        /* ---- Bundled single-file build of geometry-swallow (MIT, Jabez Torre 2022) ---- */
+
+        class InputHandler {
+            constructor(player) {
+                this.player = player;
+            }
+
+            initializeController() {
+
+                addEventListener('keydown', (e) => {
+
+                    const speed = 4;
+
+                    switch (e.key) {
+                        case 'd':
+                            this.player.velocity.x = speed;
+                            break;
+                        case 'a':
+                            this.player.velocity.x = -speed;
+                            break;
+                        case 'w':
+                            this.player.jumped = true;
+                            break;
+                    }
+                });
+
+                addEventListener('keyup', (e) => {
+                    switch (e.key) {
+                        case 'd':
+                            this.player.velocity.x = 0;
+                            break;
+                        case 'a':
+                            this.player.velocity.x = 0;
+                            break;
+                        case 'w':
+                            this.player.jumped = false;
+                            break;
+                    }
+                })
+            }
+        }
+
+        class Player {
+            constructor({ game, height, width, color, position }) {
+                this.game = game;
+                this.height = height;
+                this.width = width;
+                this.color = color;
+                this.position = position;
+                this.velocity = {
+                    x: 0,
+                    y: 0
+                };
+
+                this.jumped = false;
+                this.earnPointsDebounce = false;
+            }
+
+            draw() {
+                this.game.c.fillStyle = this.color;
+                this.game.c.fillRect(this.position.x, this.position.y, this.width, this.height);
+            }
+
+            update() {
+                this.draw();
+                this.checkCollisions();
+
+                this.position.x += this.velocity.x;
+
+                if (this.jumped) {
+                    if (this.onGround()) this.velocity.y -= 1;
+                } else {
+                    if (!this.onGround()) this.velocity.y += 1;
+                    else this.velocity.y = 0;
+                }
+
+                this.position.y += this.velocity.y;
+            }
+
+            onGround() {
+                return this.position.y >= this.game.height - this.height;
+            }
+
+            checkCollisions() {
+                this.game.obstacles.forEach((obstacle) => {
+                    var diffX = obstacle.position.x - this.position.x;
+
+                    // Has collided with an obstacle
+                    if (diffX <= obstacle.width
+                        && diffX >= -20
+                        && this.position.y - this.game.height >= -obstacle.height) {
+
+                        this.game.hasLost = true;
+                        return;
+                    }
+
+                    // Has successfully avoided an obstacle
+                    if (diffX <= obstacle.width && diffX >= -20) {
+                        if (!this.earnPointsDebounce) {
+                            this.earnPointsDebounce = true;
+                            setTimeout(() => { this.earnPointsDebounce = false }, 1000);
+
+                            if (!obstacle.hasCollectedPoint) {
+                                this.game.earnedPoints += 1;
+                                obstacle.hasCollectedPoint = true;
+                            }
+                        }
+                    }
+
+                });
+            }
+        }
+
+        class Obstacle {
+            constructor(game, position) {
+                this.game = game;
+                this.height = 50;
+                this.width = this.generateRandom();
+                this.position = position;
+
+                this.hasCollectedPoint = false;
+            }
+
+            update() {
+                this.draw();
+
+                this.position.x -= this.game.gameSpeed;
+            }
+
+            draw() {
+                this.game.c.fillStyle = 'black';
+                this.game.c.fillRect(this.position.x, this.position.y, this.width, this.height);
+            }
+
+            generateRandom() {
+                const random = Math.ceil(Math.random() * 500);
+
+                if (random > 100) return this.generateRandom();
+                if (random < 20) return this.generateRandom();
+
+                return random;
+            }
+        }
+
+        var canvas;
+
+        const pointsText = document.getElementById('points');
+        const endgameScreen = document.getElementById('endgame-screen');
+        const endgameScreenTotalPoints = document.getElementById('total-points');
+        const playAgain = document.getElementById('play-again');
+
+        class Game {
+            constructor() {
+                this.c = canvas.getContext('2d');
+                this.heartbeatId = null;
+
+                const playerHeight = 50;
+                const playerWidth = 50;
+                this.player = new Player(
+                    {
+                        game: this,
+                        height: playerHeight,
+                        width: playerWidth,
+                        color: 'black',
+                        position: {
+                            x: playerWidth,
+                            y: canvas.height - playerHeight
+                        }
+                    }
+                );
+
+                this.width = canvas.width;
+                this.height = canvas.height;
+
+                this.earnedPoints = 0;
+                this.oldPoints = 0;
+
+                this.gameSpeed = 5;
+                this.obstacles = [];
+                this.hasLost = false;
+            }
+
+            update() {
+                // Increase performance, remove used obstacles
+                this.obstacles.forEach((obstacle, index) => {
+                    if (obstacle.position.x < -obstacle.width) this.obstacles.splice(index, 1);
+                });
+
+                // Update points
+                if (this.earnedPoints != this.oldPoints) {
+                    pointsText.innerHTML = this.earnedPoints;
+                    this.oldPoints = this.earnedPoints;
+                }
+
+                // Player has lost
+                if (this.hasLost) {
+                    cancelAnimationFrame(this.heartbeatId);
+                    canvas.style.display = "none";
+                    endgameScreenTotalPoints.innerHTML = this.earnedPoints;
+                    endgameScreen.style.removeProperty("display");
+                }
+            }
+
+            draw() {
+                this.update();
+                this.player.update();
+            }
+
+            spawn() {
+                setInterval(() => {
+                    const obstacle = new Obstacle(this, {
+                        x: this.width,
+                        y: this.height - 50
+                    });
+
+                    this.obstacles.push(obstacle);
+                }, Math.floor(Math.random() * 5000) + 3000)
+            }
+        }
+
+        const gameInstance = () => {
+            canvas = document.getElementById('main-canvas');
+
+            canvas.width = 1000;
+            canvas.height = 600;
+
+            const game = new Game();
+            const controller = new InputHandler(game.player);
+            controller.initializeController();
+
+            const heartbeat = () => {
+                var heartbeatId = requestAnimationFrame(heartbeat);
+
+                game.c.fillStyle = 'white';
+                game.c.fillRect(0, 0, canvas.width, canvas.height);
+                game.heartbeatId = heartbeatId;
+
+                game.draw();
+                game.obstacles.forEach((obstacle) => {
+                    obstacle.update();
+                })
+            };
+
+            heartbeat();
+            game.spawn();
+        };
+
+        addEventListener('load', () => {
+            gameInstance();
+        });
+
+        playAgain.addEventListener('click', () => {
+            canvas.style.removeProperty("display");
+            endgameScreen.style.display = "none";
+            gameInstance();
+        });
+    </script>
+</body>
+</html>
