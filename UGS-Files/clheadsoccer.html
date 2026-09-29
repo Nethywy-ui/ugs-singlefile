@@ -1,6 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script>
+/* Cross-origin Worker shim: fetch remote worker script and re-create as blob */
+(function(){
+  var OrigWorker = window.Worker;
+  function ShimWorker(url, opts){
+    try {
+      if (typeof url === "string" && /^https?:/i.test(url)) {
+        var a = document.createElement("a"); a.href = url;
+        if (a.origin !== location.origin) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", url, false);
+          xhr.send();
+          if (xhr.status >= 200 && xhr.status < 300) {
+            var blob = new Blob([xhr.responseText], { type: "text/javascript" });
+            return new OrigWorker(URL.createObjectURL(blob), opts);
+          }
+        }
+      }
+    } catch (e) { /* fall through to original */ }
+    return new OrigWorker(url, opts);
+  }
+  ShimWorker.prototype = OrigWorker.prototype;
+  window.Worker = ShimWorker;
+})();
+</script>
+
 	<base href="https://cdn.jsdelivr.net/gh/yeodaienkyle-afk/headsoccer@2590a4e3d981863c6d1b259fc60a241baf8834f9/">
     <meta charset="UTF-8">
 	<title>Head Soccer 2026</title>
