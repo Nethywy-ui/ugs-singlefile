@@ -103,7 +103,7 @@
     }
     (async () => {
       const [dataUrl, wasmUrl] = await Promise.all([
-        mergeFiles(getParts("Build/6d41885525432ff3b29106e00c136a2e.data.br", 1, 3), "6d41885525432ff3b29106e00c136a2e.data.br"),
+        mergeFiles(getParts("https://cdn.jsdelivr.net/gh/yeodaienkyle-afk/traffic-racer-data@main/Build/6d41885525432ff3b29106e00c136a2e.data.br", 1, 3), "6d41885525432ff3b29106e00c136a2e.data.br"),
         mergeFiles(getParts("Build/253cc6f68dece82b7c6005da0838880d.wasm.br", 1, 3), "253cc6f68dece82b7c6005da0838880d.wasm.br"),
       ]);
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
