@@ -3001,6 +3001,8 @@ function generateAllSections() {
     "Z",
   ];
 
+const MAINTENANCE_GAMES = new Set(["cl3dpinballspacecadet","cl500calibercontractz","cladventurecapitalist","clangrybirds2","clantarttycoon","claviamasters","claviamastersbuggy","clbabysniperinvietnam","clbadparenting","clbaldi-3","clbaldisfunnewschoolultimate","clbeachboxingsim","clbearsus","clbendrowned","clbergentruck201x","clBFDIBranches","clbitburner","clblackjackhhhh","clblockcraftshooter","clblockydemolitionderby","clblood","clbouncybasketball","clbrawlsimulator3d","clbreadskate","clcarrampvspolicechase","clcarstuntsdriving","clcheeserolling","clclassof09","clcommandandconquer","clcookieclickercool","clcookieclickermodmenu","clcyberbungracing","clDashmetry","cldecision3","cldemolitionderbycrashracing","cldiredecks","cldodecadragons","cldontyoulecturemehtml","cldoom2dDOS","cldoom2dos","clducklifebattle","clducklingsio","cldukenukem2","cldukenukem3d","cldungeonraid","cldungeonsanddegenerategamblerdebug","cldungeonsanddegenerategamblers","cleagleride","cleggycar","clelasticface","clemujs","clescaperoad3","clfancypantsadventure3","clfearassessment","clfivenightsatepsteins","clfnaw","clfnfdocumictxtv3","clfnfrewrite","clfnfstarlightmayhem","clfreegemas","clfuschiax","clgachaverse","clGeometryDashWave","clgetyoked","clglfighters","clgoingballs","clgolforbit","clgorillatag","clgranny2","clgranny3","clgrowdenio","clhacx","clheretic","clhero3flyingrobot","clhooked","clhyppersandbox","clice age baby","cljetskiracing","cljustaplatformerE2","clkanyezone","clkilltheiceagebabyadventure","clkimjonguntilepuzzle","clkirbysoftandwet","clkourio","cllaststand","cllegionbreaker","cllittlerunmo","cllonewolf","clmakesureitsclosed","clmariominusrabbids","clmightyknight2","clminesweeperplus","clminhero","clminimart","clmonkeymart","clmotox3mwinter","clmyteardrop","clnimrods","clnullkevin","clNutsandBoltsScrewingPuzzle","clonebitadventure","clpetworld","clpint","clPokémon Emerald Rush Edition (20)","clprestigetree","clprismarine","clprocessortycoon","clpumpkinrun","clquake","clquake3","clracingarena","clraldiscrackhouse","clredvsblue2","clredvsbluewar","clretrobowl","clrisehigher","clroadofthedead","clrocketgoalio","clruffle","clsaulgoodmanrun","clschoolboyrunaway","clsd-thewar","clshiftatmidnight","clsideeffects","clsilk","clslopeplus","clsnipershot","clsniperv2","clspacewarsbattleground","clspiralroll","clstationsaturn","clsteepdescent","clstickmanclash","clstickmerge","clstickminairship","clstickminfleecomplex","clstrikerdummies","clsuperchibiknight","clsuperhot","clsuperliquidsoccer","clsuperonionboy2","clsupitdept","clSupremeDuelist2019","cltagcm","cltaisei","clthedude","cltheyarecoming","cltimewarriors","cltopspeedracing3d","cltrace","cltreeshateyou","cltungtungtungsahurobby","clultima","clundertalelb","clundertaler","cluntime","cluntitledgoosegame","clUvuvwevwevweOnyetenvewveUgwemubwemOssas","clvex3","clvincentmansionofthedead","clvortex","clwaterpoolio","clwheeliebike","clyouvs100skibidi","clzdoom","clzombopaclypse2","supremeduelistfix"]);
+
   const filesByChar = {};
   allChars.forEach((char) => {
     filesByChar[char] = [];
@@ -3036,7 +3038,7 @@ const lower = file.toLowerCase();
       filesByChar[char].forEach((file) => {
         const btn = document.createElement("input");
         btn.type = "button";
-        btn.value = file;
+        btn.value = MAINTENANCE_GAMES.has(file) ? file + " (maintenance)" : file;
         btn.onclick = () => {
   function normalizeFileName(name) {
     if (name.includes(".") && name.lastIndexOf(".") > 0) return name;
