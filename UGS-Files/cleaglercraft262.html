@@ -7,26 +7,49 @@
   <title>about:blank</title>
 </head>
 <body>
-  <script>
-    async function loadAndRun() {
-      const urls = [
-        "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262.html.pa"
-        ,"https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262.html.pb"
-        ,"https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262.html.pc"
-        ,"https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262.html.pd"
-      ];
-      let fullHtml = "";
-      for (const u of urls) {
-        const res = await fetch(u);
-        fullHtml += await res.text();
-      }
+<script>
+  async function loadAndRun() {
+    const urls = [
+      "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262.html.pa",
+      "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262.html.pb",
+      "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262.html.pc",
+      "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262.html.pd"
+    ];
 
-      document.open();
-      document.write(fullHtml);
-      document.close();
+    let fullHtml = "";
+
+    for (const u of urls) {
+      try {
+        const res = await fetch(u);
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        fullHtml += await res.text();
+
+      } catch (err) {
+        window.open(
+          "data:text/html," +
+          encodeURIComponent(`
+            <h1>JSDelivr link failed</h1>
+            <p><strong>URL:</strong> ${u}</p>
+            <p><strong>Error:</strong> ${err.message}</p>
+          `),
+          "_blank"
+        );
+
+        return;
+      }
     }
 
-    loadAndRun();
-  </script>
+    document.open();
+    document.write(fullHtml);
+    document.close();
+  }
+
+  loadAndRun();
+</script>
+
 </body>
 </html>
