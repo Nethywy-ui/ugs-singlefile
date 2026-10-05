@@ -4,52 +4,31 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>about:blank</title>
+  <title>tuff client</title>
 </head>
 <body>
-<script>
-  async function loadAndRun() {
-    const urls = [
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    async function loadAndRun() {
+      const urls = [
       "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262pa.html",
       "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262pb.html",
       "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262pc.html",
       "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262pd.html"
-    ];
-
-    let fullHtml = "";
-
-    for (const u of urls) {
-      try {
+      ];
+      let fullHtml = "";
+      for (const u of urls) {
         const res = await fetch(u);
-
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-
         fullHtml += await res.text();
-
-      } catch (err) {
-        window.open(
-          "data:text/html," +
-          encodeURIComponent(`
-            <h1>JSDelivr link failed</h1>
-            <p><strong>URL:</strong> ${u}</p>
-            <p><strong>Error:</strong> ${err.message}</p>
-          `),
-          "_blank"
-        );
-
-        return;
       }
+
+      document.open();
+      document.write(fullHtml);
+      document.close();
     }
 
-    document.open();
-    document.write(fullHtml);
-    document.close();
-  }
-
-  loadAndRun();
-</script>
-
+    loadAndRun();
+    })
+  </script>
 </body>
 </html>
