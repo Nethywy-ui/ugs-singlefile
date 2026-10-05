@@ -1,0 +1,34 @@
+<!-- ugs file -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>tuff client</title>
+</head>
+<body>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    async function loadAndRun() {
+      const urls = [
+      "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262pa.html",
+      "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262pb.html",
+      "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262pc.html",
+      "https://cdn.jsdelivr.net/gh/Nethywy-ui/jsdelivrs@main/cleaglercraft262pd.html"
+      ];
+      let fullHtml = "";
+      for (const u of urls) {
+        const res = await fetch(u);
+        fullHtml += await res.text();
+      }
+
+      document.open();
+      document.write(fullHtml);
+      document.close();
+    }
+
+    loadAndRun();
+    })
+  </script>
+</body>
+</html>
