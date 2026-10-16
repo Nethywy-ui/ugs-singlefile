@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<!-- Ultimate Game Stash file--> 
+<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
+
+<html lang="en">
+
+<head>
+  <base href="https://cdn.jsdelivr.net/gh/WebOsu-2/webosu-2.github.io@main/">
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GZ2M72GJ5S"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-GZ2M72GJ5S');
+  </script>
+
+  <meta charset="utf-8" />
+  <title>WebOsu 2.0!</title>
+  <meta name="description"
+    content="Play WebOsu – A browser-based rhythm game inspired by osu!std. Experience fast-paced gameplay with an extensive beatmap library. No downloads, play free online now!">
+  <link rel="canonical" href="https://webosu-2.github.io/" />
+  <link rel="stylesheet" href="style/picnic.min.css" />
+  <link rel="stylesheet" type="text/css" href="style/main.css" />
+  <link rel="stylesheet" type="text/css" href="style/font.css" />
+  <link rel="icon" href="favicon.png" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- Game Engine & Downloader Scripts -->
+  <script src="scripts/config.js"></script>
+  <script src="scripts/launchgame.js"></script>
+  <script src="scripts/downloader.js"></script>
+  <script src="scripts/addbeatmaplist.js"></script>
+  <script src="scripts/settings.js"></script>
+  <script src="scripts/jsloader.js"></script>
+
+  <!-- Libraries required for unzipping, audio, and state management -->
+  <script src="scripts/lib/localforage.min.js"></script>
+  <script src="scripts/lib/zip.js"></script>
+  <script src="scripts/lib/mp3parse.min.js"></script>
+  <script src="scripts/lib/zip-fs.js"></script>
+  <script src="scripts/lib/underscore.js"></script>
+  <script src="scripts/lib/sound.js"></script>
+
+  <!-- Entry Point Engine Module -->
+  <script type="module" src="scripts/initgame.js"></script>
+</head>
+
+<body>
+  <div class="game-area" id="game-area" hidden></div>
+
+  <div class="pause-menu" id="pause-menu" hidden>
+    <div class="paused-title">paused</div>
+    <div class="button-list">
+      <div class="pausebutton continue" id="pausebtn-continue">
+        <div class="inner">Continue</div>
+      </div>
+      <div class="pausebutton retry" id="pausebtn-retry">
+        <div class="inner">Retry</div>
+      </div>
+      <div class="pausebutton quit" id="pausebtn-quit">
+        <div class="inner">Quit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="main-nav">
+    <nav class="topbar">
+      <a href="index.html" class="brand">WebOsu 2.0!</a>
+      <div class="topbar-links">
+        <a href="index.html">Home</a>
+        <a href="latest.html">Latest</a>
+        <a href="popular.html">Popular</a>
+        <a href="genres.html">Genres</a>
+        <a href="favourites.html">Favourites</a>
+        <a href="history.html">History</a>
+        <a href="faq.html">FAQ</a>
+      </div>
+      <div class="nav-search topbar-search">
+        <form action="search.html">
+          <input name="q" placeholder="Beatmap name or Set ID">
+          <input type="image" class="search-button" src="research.svg">
+        </form>
+      </div>
+      <div class="topbar-actions">
+        <a href="settings.html" class="pseudo button">Settings</a>
+        <a onclick="document.documentElement.requestFullscreen()" class="pseudo button">Fullscreen</a>
+      </div>
+    </nav>
+  </nav>
+
+  <div class="main-page" id="main-page">
+    <div class="column left"></div>
+    <div class="main-content column">
+
+      <div class="announcement">
+        <p>WebOsu-2 is no longer being maintained or updated! Please go to our (much better) rewrite and successor, <a href="https://wosu.dino.icu">wosu.dino.icu</a>, instead!</p>
+      </div>
+
+      <div class="index-area">
+        <div class="section-head">
+          <h2>Random Beatmaps</h2>
+          <a onclick="genRandomList()" class="more" style="cursor:pointer;">Shuffle ⟳</a>
+        </div>
+        <hr />
+        <div class="beatmap-list" id="beatmap-list-random"></div>
+      </div>
+
+      <div class="index-area">
+        <div class="section-head">
+          <h2>Latest Beatmaps</h2>
+          <a href="latest.html" class="more">View more →</a>
+        </div>
+        <hr />
+        <div class="beatmap-list" id="beatmap-list-new"></div>
+      </div>
+
+      <div class="index-area">
+        <div class="section-head">
+          <h2>Favourited Beatmaps</h2>
+          <a href="favourites.html" class="more">View more →</a>
+        </div>
+        <hr />
+        <div class="beatmap-list" id="beatmap-list-liked">Heart any beatmap to add them here.</div>
+      </div>
+
+      <div class="index-area">
+        <div class="section-head">
+          <h2>Popular Beatmaps</h2>
+          <a href="popular.html" class="more">View more →</a>
+        </div>
+        <hr />
+        <div class="beatmap-list" id="beatmap-list-hot"></div>
+      </div>
+
+      <footer id="footer">
+        <div style="text-align:center">
+          <h3 class="text">Supports touchscreen devices.</h3>
+          <h3 class="text">Version 0.4.0, see our <a href="https://github.com/WebOsu-2/webosu-2.github.io">Github page.</a></h3>
+        </div>
+      </footer>
+
+    </div>
+    <div class="column right"></div>
+
+    <div class="statuslines" id="statuslines">
+      <div class="progress" id="script-progress">
+        Scripts
+        <div class="lds-dual-ring"></div>
+      </div>
+      <div class="progress" id="skin-progress">
+        Skin
+        <div class="lds-dual-ring"></div>
+      </div>
+      <div class="progress" id="sound-progress">
+        Hitsounds
+        <div class="lds-dual-ring"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    if (window.localforage) {
+      let listhistory = document.getElementById("beatmap-list-history");
+      if (listhistory) {
+        localforage.getItem("playhistory1000", function (err, item) {
+          if (err) {
+            listhistory.innerText = "Could not fetch play history.";
+            return;
+          }
+          if (item && item.length) {
+            item = item.slice().reverse();
+            let sid = [];
+            for (let i = 0; i < item.length; ++i) {
+              if (item[i].sid) sid.push(item[i].sid);
+            }
+            sid = [...new Set(sid)];
+            for (let i = 0; i < 4 && i < sid.length; ++i)
+              addBeatmapSid(sid[i], listhistory);
+          } else {
+            listhistory.innerText = "Play any beatmap to add them here.";
+          }
+        });
+      }
+    }
+
+    function stdOnly(t) { return (t.modes & 1) != 0; }
+
+    function genRandomList() {
+      let list = document.getElementById("beatmap-list-random");
+      let randstart = Math.floor(Math.random() * 20000);
+      addBeatmapKind("random", list, {
+        limit: 10,
+        offset: randstart,
+        maxsize: 4,
+        filter: function (t) {
+          while (list.firstChild) list.removeChild(list.firstChild);
+          return (t.modes & 1) != 0;
+        }
+      });
+    }
+
+    addBeatmapKind("latest", document.getElementById("beatmap-list-new"), { limit: 20, filter: stdOnly, maxsize: 4 });
+    genRandomList();
+    addBeatmapKind("popular", document.getElementById("beatmap-list-hot"), { limit: 4 });
+
+    if (window.localforage) {
+      window.localforage.getItem("likedsidset", function (err, val) {
+        if (err) {
+          document.getElementById("beatmap-list-liked").innerText = "Could not get liked beatmaps.";
+          return;
+        }
+        var liked;
+        if (typeof Set !== "undefined" && val instanceof Set) liked = Array.from(val);
+        else if (Array.isArray(val)) liked = val.slice();
+        else if (val && typeof normalizeLikedList === "function") liked = normalizeLikedList(val);
+        else liked = [];
+
+        liked = liked.filter(function (x) { return x || x === 0; });
+        if (liked.length) {
+          let listlike = document.getElementById("beatmap-list-liked");
+          liked = liked.reverse();
+          for (let i = 0; i < liked.length && i < 4; ++i)
+            addBeatmapSid(liked[i], listlike);
+        } else {
+          document.getElementById("beatmap-list-liked").innerText = "Heart any beatmap to add them here.";
+        }
+      });
+    } else {
+      document.getElementById("beatmap-list-liked").innerText = "Favourites need local storage support.";
+    }
+  </script>
+</body>
+
+</html>
